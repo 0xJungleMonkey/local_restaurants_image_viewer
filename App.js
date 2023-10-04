@@ -1,6 +1,4 @@
-import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
-// import RestaurantCard from "./RestaurantCard";
 import { useEffect, useState, useRef } from "react";
 import Swiper from "react-native-deck-swiper";
 import { Platform } from "react-native";
@@ -15,7 +13,32 @@ export default function App() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [offset, setOffset] = useState(0);
   const swiperRef = useRef();
+  const [location, setLocation] = useState(null);
+  const [latitude, setLatitude] = useState(0);
+  const [longitude, setLongitude] = useState(0);
+  const [errorMsg, setErrorMsg] = useState(null);
 
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied");
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+      setLongitude(location.coords.longitude);
+      setLatitude(location.coords.latitude);
+    })();
+  }, []);
+
+  let text = "Waiting..";
+  if (errorMsg) {
+    text = errorMsg;
+  } else if (location) {
+    text = `Latitude: ${location.coords.latitude}, Longitude: ${location.coords.longitude}`;
+  }
   const loadData = async () => {
     const apiKey = ENV.YELP_API_KEY;
     const options = {
@@ -27,7 +50,7 @@ export default function App() {
     };
     try {
       let response = await fetch(
-        `https://api.yelp.com/v3/businesses/search?location=New%20York%20City&sort_by=best_match&limit=20&${offset}`,
+        `https://api.yelp.com/v3/businesses/search?latitude=${latitude}&longitude=${longitude}&sort_by=best_match&limit=20&${offset}`,
         options
       );
       if (!response.ok) {
@@ -64,34 +87,9 @@ export default function App() {
       loadData(); // Call the function to fetch data again
     }
   };
-  const [location, setLocation] = useState(null);
-  const [errorMsg, setErrorMsg] = useState(null);
 
-  useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        setErrorMsg("Permission to access location was denied");
-        return;
-      }
-
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-      console.log(location);
-    })();
-  }, []);
-
-  let text = "Waiting..";
-  if (errorMsg) {
-    text = errorMsg;
-  } else if (location) {
-    text = JSON.stringify(location);
-  }
   return (
-    <View>
-      <View style={styles.container}>
-        <Text style={styles.paragraph}>{text}</Text>
-      </View>
+    <View style={styles.container}>
       <Swiper
         ref={swiperRef}
         cards={businesses.map((business) => business.name)}
@@ -120,6 +118,7 @@ export default function App() {
         backgroundColor="white"
         stackSize={1}
       />
+
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={swipeRight}>
           <Text style={styles.buttonText}>Previous</Text>
@@ -128,18 +127,41 @@ export default function App() {
           <Text style={styles.buttonText}>Next</Text>
         </TouchableOpacity>
       </View>
+      {location && (
+        <View style={styles.locationContainer}>
+          <Text style={styles.locationText}>
+            Latitude: {location.coords.latitude}
+          </Text>
+          <Text style={styles.locationText}>
+            Longitude: {location.coords.longitude}
+          </Text>
+        </View>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  paragraph: {
+    fontSize: 18,
+    textAlign: "center",
+    marginTop: 20,
+  },
+  locationContainer: {
+    marginBottom: 20,
+  },
+  locationText: {
+    fontSize: 18,
+    marginBottom: 20,
+    textAlign: "center",
+  },
   container: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
   card: {
-    width: 300,
+    width: "100%",
     height: 300,
     borderRadius: 10,
     backgroundColor: "lightblue",
@@ -161,9 +183,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   buttonContainer: {
+    width: "100%",
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 20,
+    padding: 20,
+    backgroundColor: "lightgray",
   },
   button: {
     backgroundColor: "skyblue",
