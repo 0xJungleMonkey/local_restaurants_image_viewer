@@ -1,7 +1,9 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Image } from "react-native";
 import RestaurantCard from "./RestaurantCard";
 import { useEffect, useState } from "react";
+import Swiper from "react-native-deck-swiper";
+
 import ENV from "./env";
 
 export default function App() {
@@ -29,12 +31,27 @@ export default function App() {
       console.error("There was a problem with the fetch operation:", error);
     }
   };
+  //fetch initial 20 record when loading the page
   useEffect(() => {
     loadData();
   }, []);
+  console.log(businesses[0]);
   return (
     <View>
-      <RestaurantCard style={styles.container} />
+      <Swiper
+        cards={businesses.map((business) => business.name)}
+        renderCard={(card) => {
+          const restaurant = businesses[0];
+          //prevent rendering restaurant.name, url before restaurant is logged.
+          if (!restaurant) {
+            console.log("nothing is populated yet");
+            return null; // Return null if restaurant is not defined yet
+          }
+          return (
+            <RestaurantCard style={styles.container} restaurant={restaurant} />
+          );
+        }}
+      />
     </View>
   );
 }

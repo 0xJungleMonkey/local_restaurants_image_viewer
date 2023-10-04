@@ -1,13 +1,13 @@
 import * as React from "react";
 import { Button, Card, Text } from "react-native-paper";
 
-const RestaurantCard = () => (
+const RestaurantCard = ({ restaurant }) => (
   <Card>
     <Card.Content>
-      <Text variant="titleLarge">Restaurant Name: </Text>
-      <Text variant="bodyMedium">Rating: </Text>
+      <Text variant="titleLarge">Restaurant Name: {restaurant.name}</Text>
+      <Text variant="bodyMedium">Rating: {restaurant.rating}</Text>
     </Card.Content>
-    <Card.Cover source={{ uri: "https://picsum.photos/700" }} />
+    <Card.Cover source={{ uri: restaurant.image_url }} />
     <Card.Actions>
       <Button>Previous</Button>
       <Button>Next</Button>
