@@ -11,13 +11,13 @@ export default function App() {
   const [businesses, setBusinesses] = useState([]);
   //CurrentIndex is the index of businesses, it will change when card go previous/Next.
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [offset, setOffset] = useState(0);
   const swiperRef = useRef();
-
+  //offset, latitude, longitude will be used in api request url
+  const [offset, setOffset] = useState(0);
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
   const [errorMsg, setErrorMsg] = useState(null);
-
+  //check and request device gps permission
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -28,7 +28,6 @@ export default function App() {
       }
 
       let location = await Location.getCurrentPositionAsync({});
-
       setLongitude(location.coords.longitude);
       setLatitude(location.coords.latitude);
     })();
@@ -37,7 +36,7 @@ export default function App() {
     } else if (latitude !== 0 && longitude !== 0) {
     }
   }, []);
-
+  //yelp api request hook
   const loadData = async () => {
     const apiKey = ENV.YELP_API_KEY;
     const options = {
@@ -71,25 +70,26 @@ export default function App() {
   useEffect(() => {
     loadData();
   }, []);
-  // console.log(businesses[0]);
-  const swipeLeft = () => {
-    if (currentIndex > 0) {
-      swiperRef.current.swipeLeft();
-    }
-  };
 
-  const swipeRight = () => {
+  //swipeleft
+  const swipeLeft = () => {
     if (currentIndex < businesses.length - 1) {
-      swiperRef.current.swipeRight();
+      swiperRef.current.swipeLeft();
     } else {
       // Refill cards with new data from the API
       loadData(); // Call the function to fetch data again
     }
   };
 
+  const swipeRight = () => {
+    if (currentIndex > 0) {
+      swiperRef.current.swipeRight();
+    }
+  };
+
   return (
     <View style={styles.container}>
-      {latitude !== null && longitude !== null && (
+      {latitude !== 0 && longitude !== 0 && (
         <View style={styles.locationContainer}>
           <Text style={styles.locationText}>
             Latitude: {latitude}, Longitude: {longitude}
@@ -121,8 +121,19 @@ export default function App() {
               </View>
             );
           }}
-          onSwipedLeft={() => setCurrentIndex((prevIndex) => prevIndex + 1)}
-          onSwipedRight={() => setCurrentIndex((prevIndex) => prevIndex - 1)}
+          onSwipedLeft={() => {
+            if (currentIndex < businesses.length - 1) {
+              setCurrentIndex((prevIndex) => prevIndex + 1);
+            } else {
+              // Refill cards with new data from the API
+              loadData(); // Call the function to fetch data again
+            }
+          }}
+          onSwipedRight={() => {
+            if (currentIndex > 0) {
+              setCurrentIndex((prevIndex) => prevIndex - 1);
+            }
+          }}
           cardIndex={currentIndex}
           backgroundColor="white"
           stackSize={1}
