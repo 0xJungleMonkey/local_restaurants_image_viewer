@@ -2,6 +2,8 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
 import RestaurantCard from "./RestaurantCard";
 import { useEffect, useState } from "react";
+import ENV from "./env";
+
 export default function App() {
   const [businesses, setBusinesses] = useState([]);
   const loadData = async () => {
