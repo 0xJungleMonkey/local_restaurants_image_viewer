@@ -90,43 +90,6 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Swiper
-        ref={swiperRef}
-        cards={businesses.map((business) => business.name)}
-        renderCard={(card) => {
-          const restaurant = businesses[currentIndex];
-          //prevent rendering restaurant.name, url before restaurant is logged.
-          if (!restaurant) {
-            console.log("nothing is populated yet");
-            return null; // Return null if restaurant is not defined yet
-          }
-          console.log(currentIndex);
-          return (
-            <View style={styles.card}>
-              <Image
-                style={styles.cardImage}
-                source={{ uri: restaurant.image_url }}
-              />
-              <Text style={styles.cardText}>{restaurant.name}</Text>
-              <Text style={styles.cardRating}>Rating: {restaurant.rating}</Text>
-            </View>
-          );
-        }}
-        onSwipedLeft={() => setCurrentIndex((prevIndex) => prevIndex + 1)}
-        onSwipedRight={() => setCurrentIndex((prevIndex) => prevIndex - 1)}
-        cardIndex={currentIndex}
-        backgroundColor="white"
-        stackSize={1}
-      />
-
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={swipeRight}>
-          <Text style={styles.buttonText}>Previous</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={swipeLeft}>
-          <Text style={styles.buttonText}>Next</Text>
-        </TouchableOpacity>
-      </View>
       {location && (
         <View style={styles.locationContainer}>
           <Text style={styles.locationText}>
@@ -137,17 +100,63 @@ export default function App() {
           </Text>
         </View>
       )}
+      <View style={styles.swiperContainer}>
+        <Swiper
+          ref={swiperRef}
+          cards={businesses.map((business) => business.name)}
+          renderCard={(card) => {
+            const restaurant = businesses[currentIndex];
+            //prevent rendering restaurant.name, url before restaurant is logged.
+            if (!restaurant) {
+              console.log("nothing is populated yet");
+              return null; // Return null if restaurant is not defined yet
+            }
+            console.log(currentIndex);
+            return (
+              <View style={styles.card}>
+                <Image
+                  style={styles.cardImage}
+                  source={{ uri: restaurant.image_url }}
+                />
+                <Text style={styles.cardText}>{restaurant.name}</Text>
+                <Text style={styles.cardRating}>
+                  Rating: {restaurant.rating}
+                </Text>
+              </View>
+            );
+          }}
+          onSwipedLeft={() => setCurrentIndex((prevIndex) => prevIndex + 1)}
+          onSwipedRight={() => setCurrentIndex((prevIndex) => prevIndex - 1)}
+          cardIndex={currentIndex}
+          backgroundColor="white"
+          stackSize={1}
+        />
+      </View>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.button} onPress={swipeRight}>
+          <Text style={styles.buttonText}>Previous</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={swipeLeft}>
+          <Text style={styles.buttonText}>Next</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  paragraph: {
-    fontSize: 18,
-    textAlign: "center",
-    marginTop: 20,
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  swiperContainer: {
+    flex: 1,
+    width: "100%",
   },
   locationContainer: {
+    marginTop: 120,
+
     marginBottom: 20,
   },
   locationText: {
@@ -155,11 +164,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: "center",
   },
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
+
   card: {
     width: "100%",
     height: 300,
@@ -185,7 +190,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     width: "100%",
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "space-around",
     padding: 20,
     backgroundColor: "lightgray",
   },
