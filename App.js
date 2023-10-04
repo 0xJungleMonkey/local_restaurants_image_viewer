@@ -13,7 +13,7 @@ export default function App() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [offset, setOffset] = useState(0);
   const swiperRef = useRef();
-  const [location, setLocation] = useState(null);
+
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
   const [errorMsg, setErrorMsg] = useState(null);
@@ -23,22 +23,21 @@ export default function App() {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
         setErrorMsg("Permission to access location was denied");
+
         return;
       }
 
       let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
+
       setLongitude(location.coords.longitude);
       setLatitude(location.coords.latitude);
     })();
+
+    if (errorMsg) {
+    } else if (latitude !== 0 && longitude !== 0) {
+    }
   }, []);
 
-  let text = "Waiting..";
-  if (errorMsg) {
-    text = errorMsg;
-  } else if (location) {
-    text = `Latitude: ${location.coords.latitude}, Longitude: ${location.coords.longitude}`;
-  }
   const loadData = async () => {
     const apiKey = ENV.YELP_API_KEY;
     const options = {
@@ -90,13 +89,10 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      {location && (
+      {latitude !== null && longitude !== null && (
         <View style={styles.locationContainer}>
           <Text style={styles.locationText}>
-            Latitude: {location.coords.latitude}
-          </Text>
-          <Text style={styles.locationText}>
-            Longitude: {location.coords.longitude}
+            Latitude: {latitude}, Longitude: {longitude}
           </Text>
         </View>
       )}
