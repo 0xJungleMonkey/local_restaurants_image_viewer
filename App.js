@@ -92,9 +92,8 @@ export default function App() {
       {/* Display device geolocation once located. */}
       {latitude !== 0 && longitude !== 0 && (
         <View style={styles.locationContainer}>
-          <Text style={styles.locationText}>
-            Latitude: {latitude}, Longitude: {longitude}
-          </Text>
+          <Text style={styles.locationText}>Latitude: {latitude}</Text>
+          <Text style={styles.locationText}>Longitude: {longitude}</Text>
         </View>
       )}
       {/* Display swiper and restaurant info */}
@@ -161,17 +160,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   swiperContainer: {
-    flex: 1,
+    height: "50%",
     width: "100%",
   },
   locationContainer: {
-    marginTop: 120,
-
-    marginBottom: 20,
+    height: "10%",
+    marginTop: 10,
+    // marginBottom: 20,
   },
   locationText: {
     fontSize: 18,
-    marginBottom: 20,
+    marginBottom: 10,
     textAlign: "center",
   },
 
@@ -202,15 +201,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     padding: 20,
-    backgroundColor: "lightgray",
   },
   button: {
-    backgroundColor: "skyblue",
-    padding: 10,
+    backgroundColor: "#007BFF",
+    padding: 20,
     borderRadius: 5,
   },
   buttonText: {
     color: "white",
     fontWeight: "bold",
+    fontSize: 18,
   },
 });
