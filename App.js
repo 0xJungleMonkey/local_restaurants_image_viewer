@@ -71,7 +71,7 @@ export default function App() {
     loadData();
   }, []);
 
-  //swipeleft
+  //when clicking on next button, swipeLeft.
   const swipeLeft = () => {
     if (currentIndex < businesses.length - 1) {
       swiperRef.current.swipeLeft();
@@ -80,7 +80,7 @@ export default function App() {
       loadData(); // Call the function to fetch data again
     }
   };
-
+  //when clicking on next button, swipeRight.
   const swipeRight = () => {
     if (currentIndex > 0) {
       swiperRef.current.swipeRight();
@@ -89,6 +89,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
+      {/* Display device geolocation once located. */}
       {latitude !== 0 && longitude !== 0 && (
         <View style={styles.locationContainer}>
           <Text style={styles.locationText}>
@@ -96,6 +97,7 @@ export default function App() {
           </Text>
         </View>
       )}
+      {/* Display swiper and restaurant info */}
       <View style={styles.swiperContainer}>
         <Swiper
           ref={swiperRef}
@@ -126,7 +128,7 @@ export default function App() {
               setCurrentIndex((prevIndex) => prevIndex + 1);
             } else {
               // Refill cards with new data from the API
-              loadData(); // Call the function to fetch data again
+              loadData();
             }
           }}
           onSwipedRight={() => {
@@ -139,6 +141,7 @@ export default function App() {
           stackSize={1}
         />
       </View>
+      {/* Buttons triger swipe animation */}
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={swipeRight}>
           <Text style={styles.buttonText}>Previous</Text>
