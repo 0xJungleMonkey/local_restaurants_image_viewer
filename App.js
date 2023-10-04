@@ -11,6 +11,7 @@ export default function App() {
   const [businesses, setBusinesses] = useState([]);
   //CurrentIndex is the index of businesses, it will change when card go previous/Next.
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [offset, setOffset] = useState(0);
   const swiperRef = useRef();
 
   const loadData = async () => {
@@ -24,14 +25,20 @@ export default function App() {
     };
     try {
       let response = await fetch(
-        `https://api.yelp.com/v3/businesses/search?location=New%20York%20City&sort_by=best_match&limit=20`,
+        `https://api.yelp.com/v3/businesses/search?location=New%20York%20City&sort_by=best_match&limit=20&${offset}`,
         options
       );
       if (!response.ok) {
         throw new Error("Network response was not OK");
       }
       const data = await response.json();
-      setBusinesses(data.businesses);
+      //offset to avoid repeat data.
+      setOffset(offset + 20);
+      // When load more data, save into businesses.
+      setBusinesses((prevBusinesses) => [
+        ...prevBusinesses,
+        ...data.businesses,
+      ]);
     } catch (error) {
       console.error("There was a problem with the fetch operation:", error);
     }
@@ -79,17 +86,17 @@ export default function App() {
             </View>
           );
         }}
-        onSwipedLeft={() => setCurrentIndex((prevIndex) => prevIndex - 1)}
-        onSwipedRight={() => setCurrentIndex((prevIndex) => prevIndex + 1)}
+        onSwipedLeft={() => setCurrentIndex((prevIndex) => prevIndex + 1)}
+        onSwipedRight={() => setCurrentIndex((prevIndex) => prevIndex - 1)}
         cardIndex={currentIndex}
         backgroundColor="white"
         stackSize={1}
       />
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={swipeLeft}>
+        <TouchableOpacity style={styles.button} onPress={swipeRight}>
           <Text style={styles.buttonText}>Previous</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={swipeRight}>
+        <TouchableOpacity style={styles.button} onPress={swipeLeft}>
           <Text style={styles.buttonText}>Next</Text>
         </TouchableOpacity>
       </View>
