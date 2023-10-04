@@ -7,7 +7,10 @@ import Swiper from "react-native-deck-swiper";
 import ENV from "./env";
 
 export default function App() {
+  //Businesses save all the loaded business data.
   const [businesses, setBusinesses] = useState([]);
+  //CurrentIndex is the index of businesses, it will change when card go previous/Next.
+  const [currentIndex, setCurrentIndex] = useState(0);
   const loadData = async () => {
     const apiKey = ENV.YELP_API_KEY;
     const options = {
