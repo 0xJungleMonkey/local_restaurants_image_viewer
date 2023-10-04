@@ -15,3 +15,4 @@ need apikey, geolocation. limit = 20, will need offset to fetch more data.
    npm install -g expo-cli
    expo install expo-constants
 ```
+1. geolocation of device: expo-location

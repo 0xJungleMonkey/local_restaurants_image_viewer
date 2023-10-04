@@ -3,6 +3,8 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 // import RestaurantCard from "./RestaurantCard";
 import { useEffect, useState, useRef } from "react";
 import Swiper from "react-native-deck-swiper";
+import { Platform } from "react-native";
+import * as Location from "expo-location";
 
 import ENV from "./env";
 
@@ -62,8 +64,34 @@ export default function App() {
       loadData(); // Call the function to fetch data again
     }
   };
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied");
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+      console.log(location);
+    })();
+  }, []);
+
+  let text = "Waiting..";
+  if (errorMsg) {
+    text = errorMsg;
+  } else if (location) {
+    text = JSON.stringify(location);
+  }
   return (
     <View>
+      <View style={styles.container}>
+        <Text style={styles.paragraph}>{text}</Text>
+      </View>
       <Swiper
         ref={swiperRef}
         cards={businesses.map((business) => business.name)}
