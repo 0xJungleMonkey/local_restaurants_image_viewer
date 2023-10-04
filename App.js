@@ -11,34 +11,32 @@ export default function App() {
   const [businesses, setBusinesses] = useState([]);
   //CurrentIndex is the index of businesses, it will change when card go previous/Next.
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [offset, setOffset] = useState(0);
   const swiperRef = useRef();
-  const [location, setLocation] = useState(null);
+  //offset, latitude, longitude will be used in api request url
+  const [offset, setOffset] = useState(0);
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
   const [errorMsg, setErrorMsg] = useState(null);
-
+  //check and request device gps permission
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
         setErrorMsg("Permission to access location was denied");
+
         return;
       }
 
       let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
       setLongitude(location.coords.longitude);
       setLatitude(location.coords.latitude);
     })();
-  }, []);
 
-  let text = "Waiting..";
-  if (errorMsg) {
-    text = errorMsg;
-  } else if (location) {
-    text = `Latitude: ${location.coords.latitude}, Longitude: ${location.coords.longitude}`;
-  }
+    if (errorMsg) {
+    } else if (latitude !== 0 && longitude !== 0) {
+    }
+  }, []);
+  //yelp api request hook
   const loadData = async () => {
     const apiKey = ENV.YELP_API_KEY;
     const options = {
@@ -72,34 +70,33 @@ export default function App() {
   useEffect(() => {
     loadData();
   }, []);
-  // console.log(businesses[0]);
-  const swipeLeft = () => {
-    if (currentIndex > 0) {
-      swiperRef.current.swipeLeft();
-    }
-  };
 
-  const swipeRight = () => {
+  //when clicking on next button, swipeLeft.
+  const swipeLeft = () => {
     if (currentIndex < businesses.length - 1) {
-      swiperRef.current.swipeRight();
+      swiperRef.current.swipeLeft();
     } else {
       // Refill cards with new data from the API
       loadData(); // Call the function to fetch data again
     }
   };
+  //when clicking on next button, swipeRight.
+  const swipeRight = () => {
+    if (currentIndex > 0) {
+      swiperRef.current.swipeRight();
+    }
+  };
 
   return (
     <View style={styles.container}>
-      {location && (
+      {/* Display device geolocation once located. */}
+      {latitude !== 0 && longitude !== 0 && (
         <View style={styles.locationContainer}>
-          <Text style={styles.locationText}>
-            Latitude: {location.coords.latitude}
-          </Text>
-          <Text style={styles.locationText}>
-            Longitude: {location.coords.longitude}
-          </Text>
+          <Text style={styles.locationText}>Latitude: {latitude}</Text>
+          <Text style={styles.locationText}>Longitude: {longitude}</Text>
         </View>
       )}
+      {/* Display swiper and restaurant info */}
       <View style={styles.swiperContainer}>
         <Swiper
           ref={swiperRef}
@@ -125,13 +122,25 @@ export default function App() {
               </View>
             );
           }}
-          onSwipedLeft={() => setCurrentIndex((prevIndex) => prevIndex + 1)}
-          onSwipedRight={() => setCurrentIndex((prevIndex) => prevIndex - 1)}
+          onSwipedLeft={() => {
+            if (currentIndex < businesses.length - 1) {
+              setCurrentIndex((prevIndex) => prevIndex + 1);
+            } else {
+              // Refill cards with new data from the API
+              loadData();
+            }
+          }}
+          onSwipedRight={() => {
+            if (currentIndex > 0) {
+              setCurrentIndex((prevIndex) => prevIndex - 1);
+            }
+          }}
           cardIndex={currentIndex}
           backgroundColor="white"
           stackSize={1}
         />
       </View>
+      {/* Buttons triger swipe animation */}
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={swipeRight}>
           <Text style={styles.buttonText}>Previous</Text>
@@ -151,17 +160,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   swiperContainer: {
-    flex: 1,
+    height: "50%",
     width: "100%",
   },
   locationContainer: {
-    marginTop: 120,
-
-    marginBottom: 20,
+    height: "10%",
+    marginTop: 10,
+    // marginBottom: 20,
   },
   locationText: {
     fontSize: 18,
-    marginBottom: 20,
+    marginBottom: 10,
     textAlign: "center",
   },
 
@@ -192,15 +201,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     padding: 20,
-    backgroundColor: "lightgray",
   },
   button: {
-    backgroundColor: "skyblue",
-    padding: 10,
+    backgroundColor: "#007BFF",
+    padding: 20,
     borderRadius: 5,
   },
   buttonText: {
     color: "white",
     fontWeight: "bold",
+    fontSize: 18,
   },
 });
