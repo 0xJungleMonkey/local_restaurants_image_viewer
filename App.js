@@ -31,10 +31,6 @@ export default function App() {
       setLongitude(location.coords.longitude);
       setLatitude(location.coords.latitude);
     })();
-
-    if (errorMsg) {
-    } else if (latitude !== 0 && longitude !== 0) {
-    }
   }, []);
   //yelp api request hook
   const loadData = async () => {
@@ -90,7 +86,8 @@ export default function App() {
   return (
     <View style={styles.container}>
       {/* Display device geolocation once located. */}
-      {latitude !== 0 && longitude !== 0 && (
+
+      {latitude !== 0 && longitude !== null && (
         <View style={styles.locationContainer}>
           <Text style={styles.locationText}>Latitude: {latitude}</Text>
           <Text style={styles.locationText}>Longitude: {longitude}</Text>
@@ -108,7 +105,7 @@ export default function App() {
               console.log("nothing is populated yet");
               return null; // Return null if restaurant is not defined yet
             }
-            console.log(currentIndex);
+            console.log("currentIndex: " + currentIndex);
             return (
               <View style={styles.card}>
                 <Image
@@ -140,7 +137,7 @@ export default function App() {
           stackSize={1}
         />
       </View>
-      {/* Buttons triger swipe animation */}
+      {/* Buttons trigger swipe animation */}
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={swipeRight}>
           <Text style={styles.buttonText}>Previous</Text>
