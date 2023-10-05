@@ -25,6 +25,13 @@ In order to deliver a functional and user-friendly experience, I made strategic 
 
 ## Screenshots & Demo
 
+![demo gif](https://github.com/0xJungleMonkey/local_restaurants_image_viewer/blob/5fb44dbd5c0cd54fbdb012d718076c69c11452a7/screenshot/02mainpage.gif "demo")
+
+![get device location page](https://github.com/0xJungleMonkey/local_restaurants_image_viewer/blob/5fb44dbd5c0cd54fbdb012d718076c69c11452a7/screenshot/getdevicelocation.png "get device location page")
+
+
+![mainpage](https://github.com/0xJungleMonkey/local_restaurants_image_viewer/blob/5fb44dbd5c0cd54fbdb012d718076c69c11452a7/screenshot/mainpage.png "mainpage")
+
 
 ## To run the program
 With Expo/Android studio set up, get API key from yelp developers, then run:
