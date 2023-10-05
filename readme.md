@@ -25,7 +25,7 @@ In order to deliver a functional and user-friendly experience, I made strategic 
 
 ## Screenshots & Demo
 
-![demo gif](https://github.com/0xJungleMonkey/local_restaurants_image_viewer/blob/5fb44dbd5c0cd54fbdb012d718076c69c11452a7/screenshot/02mainpage.gif "demo")
+![demo gif](https://github.com/0xJungleMonkey/local_restaurants_image_viewer/blob/5fb44dbd5c0cd54fbdb012d718076c69c11452a7/screenshot/02mainpage.gif width="48" "demo")
 
 ![get device location page](https://github.com/0xJungleMonkey/local_restaurants_image_viewer/blob/5fb44dbd5c0cd54fbdb012d718076c69c11452a7/screenshot/getdevicelocation.png "get device location page")
 
